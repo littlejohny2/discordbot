@@ -12,7 +12,7 @@ from halo import Halo
 load_dotenv()
 me = 267369024969637890
 
-fileName = 'test'
+fileName = 'hell'
 outDir = 'out'
 ##
 
@@ -31,7 +31,7 @@ class MyClient(discord.Client):
             await message.reply('cave', mention_author=True)
             print(f'gooncave completion')
 
-        if message.content == 'test':
+        if message.content == 'data':
 
             if message.author.id == me:
                 await message.reply('ok')
@@ -44,7 +44,7 @@ class MyClient(discord.Client):
                 async for msg in message.channel.history(limit=10000000000000000000000):
                     if msg.author.id == me:
                         fileOpen.write(str(msg.content))
-                        # fileOpen.write('<|endoftext|>')
+                        fileOpen.write('<|endoftext|>')
                         fileOpen.write('\n')
 
                 datascrapeLoading.succeed()
