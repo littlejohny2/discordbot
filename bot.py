@@ -1,4 +1,5 @@
 import os
+import time
 from dotenv import load_dotenv
 
 import pandas as pd
@@ -23,6 +24,8 @@ async def data(message):
     # creates new file
     newFile = os.path.join(outDir, fileName + '.txt')
     fileOpen = open(newFile, 'w', encoding="utf-8")
+
+    t0 = time.time()
 
     # iterates through message history most recent to oldest
     previousUserId = message.author.id
@@ -53,7 +56,11 @@ async def data(message):
     with open(newFile, 'w', encoding='utf-8') as file:
         file.writelines(reorderedData)
 
-    datascrapeLoading.succeed()
+    t1 = time.time()
+    dt = t1 - t0
+
+    datascrapeLoading.stop()
+    print(f'Data collecting: success || time: {dt}s')
 
 class MyClient(discord.Client):
     async def on_ready(self):
