@@ -16,6 +16,44 @@ fileName = 'hell'
 outDir = 'out'
 ##
 
+async def data(message):
+    datascrapeLoading = Halo(text='Data collecting: ', spinner='line', color='white', placement='right')
+    datascrapeLoading.start()
+
+    # creates new file
+    newFile = os.path.join(outDir, fileName + '.txt')
+    fileOpen = open(newFile, 'w', encoding="utf-8")
+
+    # iterates through message history most recent to oldest
+    previousUserId = message.author.id
+    async for msg in message.channel.history(limit=10000000000000000000000):
+        currentUserId = msg.author.id
+        
+        if currentUserId != previousUserId:
+            if currentUserId == me:
+                fileOpen.write('### CONTEXT')
+                fileOpen.write('\n')
+            if previousUserId == me:
+                fileOpen.write('### RESPONSE')
+                fileOpen.write('\n') 
+
+
+        fileOpen.write(str(msg.content))
+        fileOpen.write('<|endoftext|>')
+        fileOpen.write('\n')
+
+        previousUserId = msg.author.id
+    fileOpen.close()
+
+    # reorders to oldest -> recent 
+    with open(newFile, 'r', encoding='utf-8') as file:
+        data = file.readlines()
+    reorderedData = data[::-1]
+
+    with open(newFile, 'w', encoding='utf-8') as file:
+        file.writelines(reorderedData)
+
+    datascrapeLoading.succeed()
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -35,19 +73,8 @@ class MyClient(discord.Client):
 
             if message.author.id == me:
                 await message.reply('ok')
-                
-                datascrapeLoading = Halo(text='Data collecting: ', spinner='line', color='white', placement='right')
-                datascrapeLoading.start()
 
-                newFile = os.path.join(outDir, fileName + '.txt')
-                fileOpen = open(newFile, 'w', encoding="utf-8")
-                async for msg in message.channel.history(limit=10000000000000000000000):
-                    if msg.author.id == me:
-                        fileOpen.write(str(msg.content))
-                        fileOpen.write('<|endoftext|>')
-                        fileOpen.write('\n')
-
-                datascrapeLoading.succeed()
+                await data(message)
 
             else:
                 await message.reply('no')
