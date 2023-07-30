@@ -18,7 +18,7 @@ class DataScrapeCog(commands.Cog, name='datascrape command'):
         return ctx.message.author.id == me
 
     @commands.command(name='datascrape', usage='(filename)', description='gathers message history')
-    @commands.cooldown(30, 1, commands.BucketType.guild)
+    @commands.cooldown(1, 30, commands.BucketType.guild)
     @commands.check(userCheck)
     async def datascrape(self, ctx, fileName):
         datascrapeLoading = Halo(text='Data collecting: ', spinner='line', color='white', placement='right')

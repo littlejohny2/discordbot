@@ -68,9 +68,7 @@ def sample():
             print(f'\n{y}')
         
         if writeToFile:
-            fileName = os.path.basename(ckpt_path)
-            newFileName = os.path.splitext(fileName)[0] + 'Sample' + '.txt'
-            newFile = os.path.join(outDir, newFileName)
+            newFile = os.path.join(outDir, 'sample.txt')
 
             open(newFile, 'w', encoding="utf-8").write(y)
 

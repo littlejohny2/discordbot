@@ -16,8 +16,9 @@ class Message(commands.Cog, name='message command'):
         self.bot = bot
 
     @commands.command(name='message', usage='', description='ai message (ai is dumb)')
-    @commands.cooldown(3, 1, commands.BucketType.member)
+    @commands.cooldown(1, 3, commands.BucketType.member)
     async def message(self, ctx):
+        t0 = time.time()
 
         # creates new file
         newFile = os.path.join('gpt', 'context', 'context' + '.txt')
@@ -63,7 +64,31 @@ class Message(commands.Cog, name='message command'):
         sample.sample()
 
 
-        await ctx.send('message!')
+        # reads output
+        outputPath = os.path.join('gpt', 'output', 'sample.txt')
+
+        with open(outputPath, 'r', encoding='utf-8') as file:
+            sampleLines = file.readlines()
+        
+        outputLines: list[str] = list()
+        for line in sampleLines:
+
+            if line == '### CONTEXT\n' or line.startswith('###'):
+                break
+            
+            if not line.endswith('<|endoftext|>\n'):
+                continue
+
+            line = line.replace('<|endoftext|>', '') # temporary fix until i add other stuff
+            outputLines.append(line)
+
+
+        for line in outputLines:
+            await ctx.send(line)
+
+        t1 = time.time()
+        dt = round(t1 - t0, 3)
+        print(f'{ctx.author} ran !d message | time taken: {dt}s')
 
 
 async def setup(bot: commands.Bot):
