@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 
-from sample import sample
+sys.path.insert(1, 'C:\\Users\\Ty\\Documents\\coding\\python\\discordbot\\gpt')
+import sample
 
 from halo import Halo
 
@@ -59,7 +60,7 @@ class Message(commands.Cog, name='message command'):
 
 
         # runs sampler
-        sample()
+        sample.sample()
 
 
         await ctx.send('message!')

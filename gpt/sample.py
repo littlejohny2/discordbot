@@ -18,9 +18,9 @@ maxNewTokens = 32 # number of tokens per sample
 printConsole = False
 writeToFile = True
 
-resumeDir = 'resume'
-outDir = 'output'
-contextDir = 'context'
+resumeDir = os.path.join('gpt', 'resume')
+outDir = os.path.join('gpt', 'output')
+contextDir = os.path.join('gpt', 'context')
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 ###################
 
@@ -55,14 +55,14 @@ def sample():
         contextString = file.read()
 
     contextIds = encoding.encode(contextString, allowed_special={'<|endoftext|>'})
-    contextIds = contextIds[:96]
+    contextIds = contextIds[-96:]
 
     contextInput = (torch.tensor(contextIds, dtype=torch.long, device=device)[None, ...])
 
 
     with torch.no_grad():
 
-        y = encoding.decode(model.generate(contextInput, maxNewTokens)[0].tolist())
+        y = encoding.decode(model.generate(contextInput, maxNewTokens)[0].tolist()[-32:])
 
         if printConsole:
             print(f'\n{y}')
