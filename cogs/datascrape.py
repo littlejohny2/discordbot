@@ -1,0 +1,77 @@
+import os
+import time
+from dotenv import load_dotenv
+
+import discord
+from discord.ext import commands
+
+from halo import Halo
+
+load_dotenv()
+me = int(os.getenv('OWNER_ID'))
+
+class DataScrapeCog(commands.Cog, name='datascrape command'):
+    def __init__(self, bot:commands.bot):
+        self.bot = bot
+    
+    def userCheck(ctx):
+        return ctx.message.author.id == me
+
+    @commands.command(name='datascrape', usage='(filename)', description='gathers message history')
+    @commands.cooldown(30, 1, commands.BucketType.guild)
+    @commands.check(userCheck)
+    async def datascrape(self, ctx, fileName):
+        datascrapeLoading = Halo(text='Data collecting: ', spinner='line', color='white', placement='right')
+        datascrapeLoading.start()
+        
+        t0 = time.time()
+
+
+        # creates new file
+        newFile = os.path.join('out', fileName + '.txt')
+        fileOpen = open(newFile, 'w', encoding="utf-8")
+
+
+        # iterates through message history most recent to oldest
+        previousUserId = ctx.author.id
+        async for msg in ctx.channel.history(limit=10000000000000000000000):
+            currentUserId = msg.author.id
+            
+            if currentUserId != previousUserId:
+                if currentUserId == ctx.author.id:
+                    fileOpen.write('### CONTEXT')
+                    fileOpen.write('\n')
+                if previousUserId == ctx.author.id:
+                    fileOpen.write('### RESPONSE')
+                    fileOpen.write('\n') 
+
+
+            fileOpen.write(str(msg.content))
+            fileOpen.write('<|endoftext|>')
+            fileOpen.write('\n')
+
+            previousUserId = msg.author.id
+        fileOpen.close()
+
+
+        # reorders to oldest -> recent 
+        with open(newFile, 'r', encoding='utf-8') as file:
+            data = file.readlines()
+        reorderedData = data[::-1]
+
+        with open(newFile, 'w', encoding='utf-8') as file:
+            file.writelines(reorderedData)
+
+
+        # output to client
+        t1 = time.time()
+        dt = round(t1 - t0, 3)
+
+        datascrapeLoading.stop()
+        print(f'data collecting: success | time: {dt}s | saved to: {newFile}')
+
+        await ctx.reply(f'data collecting: success | time: {dt}s | saved to: {newFile}')
+
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(DataScrapeCog(bot))
