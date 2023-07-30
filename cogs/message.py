@@ -1,9 +1,12 @@
+import sys
 import os
 import time
 from dotenv import load_dotenv
 
 import discord
 from discord.ext import commands
+
+from sample import sample
 
 from halo import Halo
 
@@ -50,7 +53,13 @@ class Message(commands.Cog, name='message command'):
         reorderedData = data[::-1]
 
         with open(newFile, 'w', encoding='utf-8') as file:
+            file.write('### CONTEXT')
+            file.write('\n')
             file.writelines(reorderedData)
+
+
+        # runs sampler
+        sample()
 
 
         await ctx.send('message!')
