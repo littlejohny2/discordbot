@@ -1,3 +1,5 @@
+import csv
+import os
 import discord
 from discord.ext import commands
 import time
@@ -19,6 +21,20 @@ class PingCog(commands.Cog, name="ping command"):
         message = await ctx.send("🏓 Pong !")
         ping = (time.monotonic() - before) * 1000
         await message.edit(content=f"🏓 Pong !  `{int(ping)} ms`")
+
+
+        # logging
+        fieldNames = ['user', 'command', 'date', 'misc info']
+        logFile = os.path.join('out', 'log.csv')
+        with open(logFile, 'a', newline='') as file:
+            logWriter = csv.DictWriter(file, fieldNames)
+
+            newLog = { 'user': f'{ctx.author}', 'command': 'ping',
+                       'date': f'{datetime.now().strftime("%d/%m/%Y, %H:%M:%S")}', 
+                       'misc info': '' }
+            
+            logWriter.writerow(newLog)
+
 
 async def setup(bot:commands.Bot):
     await bot.add_cog(PingCog(bot))

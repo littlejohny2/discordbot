@@ -1,3 +1,4 @@
+import csv
 import os
 import time
 from datetime import datetime
@@ -74,6 +75,19 @@ class DataScrapeCog(commands.Cog, name='datascrape command'):
         print(f'data collecting: success | time: {dt}s | saved to: {newFile}')
 
         await ctx.reply(f'data collecting: success | time: {dt}s | saved to: {newFile}')
+
+
+        # logging
+        fieldNames = ['user', 'command', 'date', 'misc info']
+        logFile = os.path.join('out', 'log.csv')
+        with open(logFile, 'a', newline='') as file:
+            logWriter = csv.DictWriter(file, fieldNames)
+
+            newLog = { 'user': f'{ctx.author}', 'command': 'datascrape',
+                       'date': f'{datetime.now().strftime("%d/%m/%Y, %H:%M:%S")}', 
+                       'misc info': '' }
+            
+            logWriter.writerow(newLog)
 
 
 async def setup(bot: commands.Bot):

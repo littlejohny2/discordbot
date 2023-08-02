@@ -1,3 +1,4 @@
+import csv
 import sys
 import os
 import time
@@ -84,12 +85,26 @@ class Message(commands.Cog, name='message command'):
             outputLines.append(line)
 
 
+        # output to user
         for line in outputLines:
             await ctx.send(line)
 
         t1 = time.time()
         dt = round(t1 - t0, 3)
         print(f'{ctx.author} ran !d message | time taken: {dt}s | date: {datetime.now()}')
+
+
+        # logging
+        fieldNames = ['user', 'command', 'date', 'misc info']
+        logFile = os.path.join('out', 'log.csv')
+        with open(logFile, 'a', newline='') as file:
+            logWriter = csv.DictWriter(file, fieldNames)
+
+            newLog = { 'user': f'{ctx.author}', 'command': 'message',
+                       'date': f'{datetime.now().strftime("%d/%m/%Y, %H:%M:%S")}', 
+                       'misc info': f'time taken: {dt}s' }
+            
+            logWriter.writerow(newLog)
 
 
 async def setup(bot: commands.Bot):
