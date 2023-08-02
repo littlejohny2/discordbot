@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import time
+from datetime import datetime
 
 
 class PingCog(commands.Cog, name="ping command"):
@@ -12,6 +13,8 @@ class PingCog(commands.Cog, name="ping command"):
                     description = "displays the bot's ping.")
     @commands.cooldown(1, 2, commands.BucketType.member)
     async def ping(self, ctx):
+        print(f'{ctx.author} ran !d ping | date: {datetime.now()}')
+
         before = time.monotonic()
         message = await ctx.send("🏓 Pong !")
         ping = (time.monotonic() - before) * 1000

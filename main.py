@@ -32,7 +32,7 @@ async def on_ready():
 async def main():
     for file in os.listdir('cogs'):
         if file.endswith('.py'):
-            print(f'loaded: cogs.{file[:-3]}')
+            print(f'Loaded: cogs.{file[:-3]}')
             await bot.load_extension(f'cogs.{file[:-3]}')
 
 

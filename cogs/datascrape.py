@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 from dotenv import load_dotenv
 
 import discord
@@ -21,6 +22,8 @@ class DataScrapeCog(commands.Cog, name='datascrape command'):
     @commands.cooldown(1, 30, commands.BucketType.guild)
     @commands.check(userCheck)
     async def datascrape(self, ctx, fileName):
+        print(f'{ctx.author} ran !d datascrape | date: {datetime.today()}')
+
         datascrapeLoading = Halo(text='Data collecting: ', spinner='line', color='white', placement='right')
         datascrapeLoading.start()
         

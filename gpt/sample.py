@@ -30,7 +30,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 ckpt_path = os.path.join(resumeDir, os.listdir(resumeDir)[0])
 checkpoint = torch.load(ckpt_path, map_location=device)
 
-print(f"Loading model from {ckpt_path}")
+print(f"Loaded model from {ckpt_path}")
 
 config = Config(**checkpoint['modelArgs'])
 model = GenerativePretrainedTransformer(config)

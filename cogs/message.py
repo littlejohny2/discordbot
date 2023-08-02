@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+from datetime import datetime
 from dotenv import load_dotenv
 
 import discord
@@ -88,7 +89,7 @@ class Message(commands.Cog, name='message command'):
 
         t1 = time.time()
         dt = round(t1 - t0, 3)
-        print(f'{ctx.author} ran !d message | time taken: {dt}s')
+        print(f'{ctx.author} ran !d message | time taken: {dt}s | date: {datetime.now()}')
 
 
 async def setup(bot: commands.Bot):
